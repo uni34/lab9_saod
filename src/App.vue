@@ -4,93 +4,70 @@
         <div class="app__form">
             <label class="app__label" for="percent">Задать процент упорядоченности</label>
             <br>
-            <input class="app__percent" @input="showPercent = false" v-model="percent" id="percent" placeholder="Введите процент..."/>%
+            <input class="app__percent" @input="showPercent = false" v-model="percent" id="percent"
+                   placeholder="Введите процент..."/>%
             <button @click="showPercent = true" class="app__btn">Задать процент</button>
 
         </div>
         <div v-if="showPercent" class="app__label">
-          <p v-if="!isNaN(percent)">Процент {{percent}} задан!</p>
-          <p v-else> Ошибка! Неверный тип данных </p>
+            <p v-if="!isNaN(percent)">Процент {{ percent }} задан!</p>
+            <p v-else> Ошибка! Неверный тип данных </p>
         </div>
 
-        <h3 class="app__label">Графики сравнения временных характеристик</h3>
-        <div class="app__label">Неупорядоченная последовательность</div>
+        <h3 class="app__label">График сравнения временных характеристик</h3>
         <div v-if="show1">Время, мс</div>
         <Graphics v-if="show1" :chartdata="chartData1" :options="chartOptions" class="app__graphics"></Graphics>
         <div v-if="show1" class="app__text">Размерность СД</div>
         <div class="app__form">
-            <button @click="notSortedGraphic" class="app__btn">Задать график</button>
+            <button @click="notSortedGraphic" class="app__btn">Сортировать</button>
             <button v-if="!show1" @click="show1 = true" class="app__btn">Показать график</button>
             <button v-if="show1" @click="show1 = false" class="app__btn">Скрыть график</button>
         </div>
 
 
-        <div class="app__label">Упорядоченная последовательность</div>
+        <h3 class="app__label">График анализа временных характеристик</h3>
         <div v-if="show2">Время, мс</div>
         <Graphics v-if="show2" :chartdata="chartData2" :options="chartOptions" class="app__graphics"></Graphics>
         <div v-if="show2" class="app__text">Размерность СД</div>
         <div class="app__form">
-            <button @click="sortedGraphic" class="app__btn">Задать график</button>
+            <button @click="sortedGraphic" class="app__btn">Сортировать</button>
             <button v-if="!show2" @click="show2 = true" class="app__btn">Показать график</button>
             <button v-if="show2" @click="show2 = false" class="app__btn">Скрыть график</button>
         </div>
 
 
-        <div class="app__label">Обратно упорядоченная последовательность</div>
-        <div v-if="show3">Время, мс</div>
-        <Graphics v-if="show3" :chartdata="chartData3" :options="chartOptions" class="app__graphics"></Graphics>
-        <div v-if="show3" class="app__text">Размерность СД</div>
-        <div class="app__form">
-            <button @click="revertSortedGraphic" class="app__btn">Задать график</button>
-            <button v-if="!show3" @click="show3 = true" class="app__btn">Показать график</button>
-            <button v-if="show3" @click="show3 = false" class="app__btn">Скрыть график</button>
-        </div>
+<!--        <div class="table">-->
+<!--            <h3 class="app__label">Таблица сравнения временных характеристик</h3>-->
+<!--            <TableItem-->
+<!--                class="table__row"-->
+<!--                algorithmName=""-->
+<!--                notSortedValue="Неупорядоченная последовательность"-->
+<!--                sortedValue="Упорядоченная последовательность"-->
+<!--                revertSortedValue="Упорядоченная в обратном порядке последовательность"-->
+<!--                halfSortedValue="Частично упорядоченная последовательность"-->
+<!--            >-->
+<!--            </TableItem>-->
+<!--            <TableItem v-for="(item, index) in tableInfo"-->
+<!--                       class="table__row"-->
+<!--                       :key="index"-->
+<!--                       :algorithmName="item.name"-->
+<!--                       :notSortedValue="item.notSortedValue"-->
+<!--                       :sortedValue="item.sortedValue"-->
+<!--                       :halfSortedValue="item.halfSortedValue"-->
+<!--                       :revertSortedValue="item.revertSortedValue"-->
 
-
-        <div class="app__label">Частично упорядоченная последовательность</div>
-        <div v-if="show4">Время, мс</div>
-        <Graphics v-if="show4" :chartdata="chartData4" :options="chartOptions" class="app__graphics"></Graphics>
-        <div v-if="show4" class="app__text">Размерность СД</div>
-        <div class="app__form">
-            <button @click="halfSortedGraphic" class="app__btn">Задать график</button>
-            <button v-if="!show4" @click="show4 = true" class="app__btn">Показать график</button>
-            <button v-if="show4" @click="show4 = false" class="app__btn">Скрыть график</button>
-        </div>
-
-        <div class="table">
-            <h3 class="app__label">Таблица сравнения временных характеристик</h3>
-            <TableItem
-                class="table__row"
-                algorithmName=""
-                notSortedValue="Неупорядоченная последовательность"
-                sortedValue="Упорядоченная последовательность"
-                revertSortedValue="Упорядоченная в обратном порядке последовательность"
-                halfSortedValue="Частично упорядоченная последовательность"
-            >
-            </TableItem>
-            <TableItem v-for="(item, index) in tableInfo"
-                       class="table__row"
-                       :key="index"
-                       :algorithmName="item.name"
-                       :notSortedValue="item.notSortedValue"
-                       :sortedValue="item.sortedValue"
-                       :halfSortedValue="item.halfSortedValue"
-                       :revertSortedValue="item.revertSortedValue"
-    
-            >
-            </TableItem>
-        </div>
-            <div class="app__form">
-                <button @click="setTableInfo" class="app__btn">Показать результаты</button>
-            </div>
-
-
-     </div>
+<!--            >-->
+<!--            </TableItem>-->
+<!--        </div>-->
+<!--        <div class="app__form">-->
+<!--            <button @click="setTableInfo" class="app__btn">Показать результаты</button>-->
+<!--        </div>-->
+    </div>
 </template>
 
 <script>
 import Graphics from '../src/components/Graphics/index.vue';
-import TableItem from '../src/components/TableItem/index.vue'
+// import TableItem from '../src/components/TableItem/index.vue';
 import sortArray from '../src/algorithms/array.js';
 import sortHalfLinkedList from '../src/algorithms/halfLinkedList.js';
 import sortLinkedList from '../src/algorithms/linkedList.js';
@@ -102,7 +79,7 @@ export default {
 
     components: {
         Graphics,
-        TableItem
+        // TableItem
     },
 
     data: function () {
@@ -207,7 +184,7 @@ export default {
                     }
                 }
             },
-          }
+        }
     },
 
     methods: {
@@ -396,63 +373,63 @@ export default {
             sortLinkedList(a2);
             this.graphicsInfo.halfSorted.linkedList.first = performance.now() - this.graphicsInfo.halfSorted.linkedList.first;
         },
-        setTableInfo() {
-            let a = initNotSortedList(1100, 100);
-            let b = initSortedList(1100, 100);
-            let c = initHalfSortedList(1100, 100, !isNaN(this.percent) ? this.percent/100 : 0);
-            let d = initRevertSortedList(1100, 100);
-
-            this.tableInfo.array.notSortedValue = performance.now();
-            sortArray(a.slice());
-            this.tableInfo.array.notSortedValue = performance.now() - this.tableInfo.array.notSortedValue;
-
-            this.tableInfo.array.sortedValue = performance.now();
-            sortArray(b.slice());
-            this.tableInfo.array.sortedValue = performance.now() - this.tableInfo.array.sortedValue;
-
-            this.tableInfo.array.halfSortedValue = performance.now();
-            sortArray(c.slice());
-            this.tableInfo.array.halfSortedValue = performance.now() - this.tableInfo.array.halfSortedValue;
-
-            this.tableInfo.array.revertSortedValue = performance.now();
-            sortArray(d.slice());
-            this.tableInfo.array.revertSortedValue = performance.now() - this.tableInfo.array.revertSortedValue;
-
-            this.tableInfo.halfLinkedList.notSortedValue = performance.now();
-            sortHalfLinkedList(a.slice());
-            this.tableInfo.halfLinkedList.notSortedValue = performance.now() - this.tableInfo.halfLinkedList.notSortedValue;
-
-            this.tableInfo.halfLinkedList.sortedValue = performance.now();
-            sortHalfLinkedList(b.slice());
-            this.tableInfo.halfLinkedList.sortedValue = performance.now() - this.tableInfo.halfLinkedList.sortedValue;
-
-            this.tableInfo.halfLinkedList.halfSortedValue = performance.now();
-            sortHalfLinkedList(c.slice());
-            this.tableInfo.halfLinkedList.halfSortedValue = performance.now() - this.tableInfo.halfLinkedList.halfSortedValue;
-
-            this.tableInfo.halfLinkedList.revertSortedValue = performance.now();
-            sortHalfLinkedList(d.slice());
-            this.tableInfo.halfLinkedList.revertSortedValue = performance.now() - this.tableInfo.halfLinkedList.revertSortedValue;
-
-
-            this.tableInfo.linkedList.notSortedValue = performance.now();
-            sortLinkedList(a.slice());
-            this.tableInfo.linkedList.notSortedValue = performance.now() - this.tableInfo.linkedList.notSortedValue;
-
-            this.tableInfo.linkedList.sortedValue = performance.now();
-            sortLinkedList(b.slice());
-            this.tableInfo.linkedList.sortedValue = performance.now() - this.tableInfo.linkedList.sortedValue;
-
-            this.tableInfo.linkedList.halfSortedValue = performance.now();
-            sortLinkedList(c.slice());
-            this.tableInfo.linkedList.halfSortedValue = performance.now() - this.tableInfo.linkedList.halfSortedValue;
-
-            this.tableInfo.linkedList.revertSortedValue = performance.now();
-            sortLinkedList(d.slice());
-            this.tableInfo.linkedList.revertSortedValue = performance.now() - this.tableInfo.linkedList.revertSortedValue;
-        }
+        // setTableInfo() {
+        //     let a = initNotSortedList(1100, 100);
+        //     let b = initSortedList(1100, 100);
+        //     let c = initHalfSortedList(1100, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
+        //     let d = initRevertSortedList(1100, 100);
+        //
+        //     this.tableInfo.array.notSortedValue = performance.now();
+        //     sortArray(a.slice());
+        //     this.tableInfo.array.notSortedValue = performance.now() - this.tableInfo.array.notSortedValue;
+        //
+        //     this.tableInfo.array.sortedValue = performance.now();
+        //     sortArray(b.slice());
+        //     this.tableInfo.array.sortedValue = performance.now() - this.tableInfo.array.sortedValue;
+        //
+        //     this.tableInfo.array.halfSortedValue = performance.now();
+        //     sortArray(c.slice());
+        //     this.tableInfo.array.halfSortedValue = performance.now() - this.tableInfo.array.halfSortedValue;
+        //
+        //     this.tableInfo.array.revertSortedValue = performance.now();
+        //     sortArray(d.slice());
+        //     this.tableInfo.array.revertSortedValue = performance.now() - this.tableInfo.array.revertSortedValue;
+        //
+        //     this.tableInfo.halfLinkedList.notSortedValue = performance.now();
+        //     sortHalfLinkedList(a.slice());
+        //     this.tableInfo.halfLinkedList.notSortedValue = performance.now() - this.tableInfo.halfLinkedList.notSortedValue;
+        //
+        //     this.tableInfo.halfLinkedList.sortedValue = performance.now();
+        //     sortHalfLinkedList(b.slice());
+        //     this.tableInfo.halfLinkedList.sortedValue = performance.now() - this.tableInfo.halfLinkedList.sortedValue;
+        //
+        //     this.tableInfo.halfLinkedList.halfSortedValue = performance.now();
+        //     sortHalfLinkedList(c.slice());
+        //     this.tableInfo.halfLinkedList.halfSortedValue = performance.now() - this.tableInfo.halfLinkedList.halfSortedValue;
+        //
+        //     this.tableInfo.halfLinkedList.revertSortedValue = performance.now();
+        //     sortHalfLinkedList(d.slice());
+        //     this.tableInfo.halfLinkedList.revertSortedValue = performance.now() - this.tableInfo.halfLinkedList.revertSortedValue;
+        //
+        //
+        //     this.tableInfo.linkedList.notSortedValue = performance.now();
+        //     sortLinkedList(a.slice());
+        //     this.tableInfo.linkedList.notSortedValue = performance.now() - this.tableInfo.linkedList.notSortedValue;
+        //
+        //     this.tableInfo.linkedList.sortedValue = performance.now();
+        //     sortLinkedList(b.slice());
+        //     this.tableInfo.linkedList.sortedValue = performance.now() - this.tableInfo.linkedList.sortedValue;
+        //
+        //     this.tableInfo.linkedList.halfSortedValue = performance.now();
+        //     sortLinkedList(c.slice());
+        //     this.tableInfo.linkedList.halfSortedValue = performance.now() - this.tableInfo.linkedList.halfSortedValue;
+        //
+        //     this.tableInfo.linkedList.revertSortedValue = performance.now();
+        //     sortLinkedList(d.slice());
+        //     this.tableInfo.linkedList.revertSortedValue = performance.now() - this.tableInfo.linkedList.revertSortedValue;
+        // }
     },
-    
+
     computed: {
         notSorted100() {
             return initNotSortedList(200, 100);
@@ -473,13 +450,13 @@ export default {
             return initSortedList(1500, 100);
         },
         halfSorted200() {
-            return initHalfSortedList(200, 100, !isNaN(this.percent) ? this.percent/100 : 0);
+            return initHalfSortedList(200, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
         },
         halfSorted400() {
-            return initHalfSortedList(1000, 100, !isNaN(this.percent) ? this.percent/100 : 0);
+            return initHalfSortedList(1000, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
         },
         halfSorted600() {
-            return initHalfSortedList(1500, 100, !isNaN(this.percent) ? this.percent/100 : 0);
+            return initHalfSortedList(1500, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
         },
         revertSorted200() {
             return initRevertSortedList(300, 100);
@@ -497,115 +474,126 @@ export default {
             }
         },
         chartData1() {
+            let sets = [
+                {
+                    label: 'Сортировка массива методом прямого включения',
+                    pointBackgroundColor: 'white',
+                    borderColor: '#006703',
+                    fill: 'none',
+                    data: [0, this.graphicsInfo.notSorted.array.first, this.graphicsInfo.notSorted.array.second, this.graphicsInfo.notSorted.array.third]
+                },
+                {
+                    label: 'Сортировка односвязного списка методом прямого включения',
+                    pointBackgroundColor: 'white',
+                    borderColor: 'yellow',
+                    fill: 'none',
+                    data: [0, this.graphicsInfo.notSorted.halfLinkedList.first, this.graphicsInfo.notSorted.halfLinkedList.second, this.graphicsInfo.notSorted.halfLinkedList.third]
+                },
+                {
+                    label: 'Сортировка двусвязного списка методом прямого включения',
+                    pointBackgroundColor: 'white',
+                    borderColor: '#CE6796',
+                    fill: 'none',
+                    data: [0, this.graphicsInfo.notSorted.linkedList.first, this.graphicsInfo.notSorted.linkedList.second, this.graphicsInfo.notSorted.linkedList.third]
+                }
+            ];
+            let testItem = {
+                label: 'Тест',
+                pointBackgroundColor: 'white',
+                borderColor: '#AA2703',
+                fill: 'none',
+                data: [0, 1, 2, 3]
+            }
+            if (!this.show4) {
+                sets.push(testItem);
+            }
             return {
-                labels: ['0', '200','1000','1500'],
-                datasets: [
-                    {
-                        label: 'Сортировка массива методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: '#006703',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.notSorted.array.first,this.graphicsInfo.notSorted.array.second,this.graphicsInfo.notSorted.array.third]
-                    },
-                    {
-                        label: 'Сортировка односвязного списка методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: 'yellow',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.notSorted.halfLinkedList.first,this.graphicsInfo.notSorted.halfLinkedList.second,this.graphicsInfo.notSorted.halfLinkedList.third]
-                    },
-                    {
-                        label: 'Сортировка двусвязного списка методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: '#CE6796',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.notSorted.linkedList.first,this.graphicsInfo.notSorted.linkedList.second,this.graphicsInfo.notSorted.linkedList.third]
-                    }
-                ]
+                labels: ['0', '200', '1000', '1500'],
+                datasets: sets
             }
         },
         chartData2() {
             return {
-                labels: ['0', '200','1000','1500'],
+                labels: ['0', '200', '1000', '1500'],
                 datasets: [
                     {
                         label: 'Сортировка массива методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: '#006703',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.sorted.array.first,this.graphicsInfo.sorted.array.second,this.graphicsInfo.sorted.array.third]
+                        data: [0, this.graphicsInfo.sorted.array.first, this.graphicsInfo.sorted.array.second, this.graphicsInfo.sorted.array.third]
                     },
                     {
                         label: 'Сортировка односвязного списка методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: 'yellow',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.sorted.halfLinkedList.first,this.graphicsInfo.sorted.halfLinkedList.second,this.graphicsInfo.sorted.halfLinkedList.third]
+                        data: [0, this.graphicsInfo.sorted.halfLinkedList.first, this.graphicsInfo.sorted.halfLinkedList.second, this.graphicsInfo.sorted.halfLinkedList.third]
                     },
                     {
                         label: 'Сортировка двусвязного списка методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: '#CE6796',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.sorted.linkedList.first,this.graphicsInfo.sorted.linkedList.second,this.graphicsInfo.sorted.linkedList.third]
+                        data: [0, this.graphicsInfo.sorted.linkedList.first, this.graphicsInfo.sorted.linkedList.second, this.graphicsInfo.sorted.linkedList.third]
                     }
                 ]
             }
         },
         chartData3() {
             return {
-                labels: ['0', '200','1000','1500'],
+                labels: ['0', '200', '1000', '1500'],
                 datasets: [
                     {
                         label: 'Сортировка массива методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: '#006703',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.revertSorted.array.first,this.graphicsInfo.revertSorted.array.second,this.graphicsInfo.revertSorted.array.third]
+                        data: [0, this.graphicsInfo.revertSorted.array.first, this.graphicsInfo.revertSorted.array.second, this.graphicsInfo.revertSorted.array.third]
                     },
                     {
                         label: 'Сортировка односвязного списка методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: 'yellow',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.revertSorted.halfLinkedList.first,this.graphicsInfo.revertSorted.halfLinkedList.second,this.graphicsInfo.revertSorted.halfLinkedList.third]
-    
+                        data: [0, this.graphicsInfo.revertSorted.halfLinkedList.first, this.graphicsInfo.revertSorted.halfLinkedList.second, this.graphicsInfo.revertSorted.halfLinkedList.third]
+
                     },
                     {
                         label: 'Сортировка двусвязного списка методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: '#CE6796',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.revertSorted.linkedList.first,this.graphicsInfo.revertSorted.linkedList.second,this.graphicsInfo.revertSorted.linkedList.third]
+                        data: [0, this.graphicsInfo.revertSorted.linkedList.first, this.graphicsInfo.revertSorted.linkedList.second, this.graphicsInfo.revertSorted.linkedList.third]
                     }
                 ]
             }
         },
         chartData4() {
             return {
-                labels: ['0', '200','1000','1500'],
+                labels: ['0', '200', '1000', '1500'],
                 datasets: [
                     {
                         label: 'Сортировка массива методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: '#006703',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.halfSorted.array.first,this.graphicsInfo.halfSorted.array.second,this.graphicsInfo.halfSorted.array.third]
+                        data: [0, this.graphicsInfo.halfSorted.array.first, this.graphicsInfo.halfSorted.array.second, this.graphicsInfo.halfSorted.array.third]
                     },
                     {
                         label: 'Сортировка односвязного списка методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: 'yellow',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.halfSorted.halfLinkedList.first,this.graphicsInfo.halfSorted.halfLinkedList.second,this.graphicsInfo.halfSorted.halfLinkedList.third]
-    
+                        data: [0, this.graphicsInfo.halfSorted.halfLinkedList.first, this.graphicsInfo.halfSorted.halfLinkedList.second, this.graphicsInfo.halfSorted.halfLinkedList.third]
+
                     },
                     {
                         label: 'Сортировка двусвязного списка методом прямого включения',
                         pointBackgroundColor: 'white',
                         borderColor: '#CE6796',
                         fill: 'none',
-                        data: [0, this.graphicsInfo.halfSorted.linkedList.first,this.graphicsInfo.halfSorted.linkedList.second,this.graphicsInfo.halfSorted.linkedList.third]
+                        data: [0, this.graphicsInfo.halfSorted.linkedList.first, this.graphicsInfo.halfSorted.linkedList.second, this.graphicsInfo.halfSorted.linkedList.third]
                     }
                 ]
             }
@@ -616,6 +604,7 @@ export default {
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
+
 #app {
     font-family: 'Open Sans';
     -webkit-font-smoothing: antialiased;
@@ -626,6 +615,7 @@ export default {
     font-weight: normal;
     padding: 10px;
 }
+
 .app__label {
     position: relative;
     width: 100%;
@@ -641,7 +631,7 @@ export default {
     color: #FFFFFF;
 }
 
-.app__btn{
+.app__btn {
     background: #CE6796;
     border-radius: 6px;
     position: relative;
@@ -652,10 +642,11 @@ export default {
     border: none;
     outline: none;
 }
-.app__btn:hover{
-    -moz-box-shadow:0 0 10px #CE6796;
-    -webkit-box-shadow:0 0 10px #CE6796;
-    box-shadow:0 0 10px #CE6796;
+
+.app__btn:hover {
+    -moz-box-shadow: 0 0 10px #CE6796;
+    -webkit-box-shadow: 0 0 10px #CE6796;
+    box-shadow: 0 0 10px #CE6796;
     cursor: pointer;
 }
 
@@ -666,6 +657,7 @@ export default {
     flex-wrap: wrap;
     align-items: baseline;
 }
+
 .app__percent {
     background: #29293D;
     border-radius: 6px;
@@ -676,22 +668,28 @@ export default {
     padding: 10px;
     margin: 12px;
 }
+
 .app__text {
-  text-align: right;
+    text-align: right;
 }
-a{
+
+a {
     cursor: pointer;
 }
-label{
+
+label {
     cursor: pointer;
 }
-a:hover{
+
+a:hover {
     text-decoration: underline;
 }
+
 body {
     margin: 0;
     background: #FFFFFF;
 }
+
 /* fonts */
 /* roboto-regular - latin_cyrillic */
 @font-face {
@@ -699,16 +697,15 @@ body {
     font-style: normal;
     font-weight: 400;
     src: local('Roboto'), local('Roboto-Regular'),
-    url('/fonts/roboto-v20-latin_cyrillic-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-    url('/fonts/roboto-v20-latin_cyrillic-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    url('/fonts/roboto-v20-latin_cyrillic-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('/fonts/roboto-v20-latin_cyrillic-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
+
 /* roboto-700 - latin_cyrillic */
 @font-face {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 700;
     src: local('Roboto Bold'), local('Roboto-Bold'),
-    url('/fonts/roboto-v20-latin_cyrillic-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-    url('/fonts/roboto-v20-latin_cyrillic-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    url('/fonts/roboto-v20-latin_cyrillic-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('/fonts/roboto-v20-latin_cyrillic-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 </style>
