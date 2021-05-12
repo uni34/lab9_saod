@@ -1,472 +1,506 @@
 <template>
     <div id="app">
-
-        <div class="app__form">
-            <label class="app__label" for="percent">Задать процент упорядоченности</label>
-            <br>
-            <input class="app__percent" @input="showPercent = false" v-model="percent" id="percent"
-                   placeholder="Введите процент..."/>%
-            <button @click="showPercent = true" class="app__btn">Задать процент</button>
-
-        </div>
-        <div v-if="showPercent" class="app__label">
-            <p v-if="!isNaN(percent)">Процент {{ percent }} задан!</p>
-            <p v-else> Ошибка! Неверный тип данных </p>
+        <h3 class="app__label">Характеристики сортировок</h3>
+        <div class="app__form" style="justify-content: space-evenly; width: 100%">
+            <h4>
+                {{twoPhaseSort.methodName}} <br>
+            </h4>
+            <div v-for="(item, i) in twoPhaseSort.allSwaps" :key="i" style="width: 100%; margin: 2px 30px">
+                {{item.toString()}}
+            </div>
         </div>
 
-        <h3 class="app__label">График сравнения временных характеристик</h3>
+        <div class="app__form" style="justify-content: space-evenly; width: 100%">
+            <h4>
+                {{onePhaseSort.methodName}} <br>
+            </h4>
+            <div v-for="(item, i) in onePhaseSort.allSwaps" :key="i" style="width: 100%; margin: 2px 30px">
+                {{item.toString()}}
+            </div>
+        </div>
+
+
+        <h3 class="app__label">Сравнение алгоритмов сортировки простым слиянием</h3>
+        <div style="display: flex; justify-content: center">
+            Размерность<br><input type="number" v-model="sizeExample">
+        </div>
+
+        <div class="tableItem">
+            <div class="tableItem__value"></div>
+            <div class="tableItem__value">Однофазная</div>
+            <div class="tableItem__value">Двухфазная</div>
+        </div>
+        <div class="tableItem">
+            <div class="tableItem__value">Время</div>
+            <div class="tableItem__value">{{sortOnePhaseExample.time}}</div>
+            <div class="tableItem__value">{{sortTwoPhaseExample.time}}</div>
+        </div>
+        <div class="tableItem">
+            <div class="tableItem__value">
+                Число чтений
+            </div>
+            <div class="tableItem__value">{{sortOnePhaseExample.count}}</div>
+            <div class="tableItem__value">{{sortTwoPhaseExample.count}}</div>
+        </div>
+        <div class="tableItem">
+            <div class="tableItem__value">
+                Число сравнений
+            </div>
+            <div class="tableItem__value">{{sortOnePhaseExample.count}}</div>
+            <div class="tableItem__value">{{sortTwoPhaseExample.count}}</div>
+        </div>
+        <button @click="sortExample" class="app__btn">Сравнить</button>
+
+        <h3 class="app__label">Сравнение алгоритмов</h3>
+        <div class="app__form" style="justify-content: space-evenly; width: 100%">
+            <div style="width: 30%">
+                <label class="app__label" for="percent">Задать процент упорядоченности</label>
+                <br>
+                <input class="app__percent" v-model="percent" id="percent"
+                       placeholder="Введите процент..."/>%
+            </div>
+            <div style="width: 20%">
+                <h4>Упорядоченность</h4>
+                <input type="radio" name="sort" value="notSort"> Неупорядоченный <br>
+                <input type="radio" name="sort" value="sort"> Упорядоченный<br>
+                <input type="radio" name="sort" value="revertSort"> По убыванию<br>
+                <input type="radio" name="sort" value="halfSort"> Частично<br>
+            </div>
+            <div style="width: 20%">
+                <h4>Сортировки</h4>
+                <input type="checkbox" name="exchange" id="exchange"> Обмен <br>
+                <input type="checkbox" name="choice" id="choice"> Выбор<br>
+                <input type="checkbox" name="insert" id="insert"> Вставка<br>
+                <input type="checkbox" name="shella" id="shella"> Шелла<br>
+                <input type="checkbox" name="linear" id="linear"> Линейная<br>
+                <input type="checkbox" name="onePhaseMerge" id="onePhaseMerge"> Однофазная простым слиянием<br>
+                <input type="checkbox" name="twoPhaseMerge" id="twoPhaseMerge"> Двухфазная простым слиянием<br>
+            </div>
+            <div style="width: 15%">
+                Размерность<input type="number" v-model="size1"><br>
+                Число шагов<input type="number" v-model="steps1">
+            </div>
+        </div>
+
         <div v-if="show1">Время, мс</div>
         <Graphics v-if="show1" :chartdata="chartData1" :options="chartOptions" class="app__graphics"></Graphics>
-        <div v-if="show1" class="app__text">Размерность СД</div>
+        <div v-if="show1" class="app__text">Шаги</div>
         <div class="app__form">
-            <button @click="notSortedGraphic" class="app__btn">Сортировать</button>
+            <button @click="sortCompare" class="app__btn">Сравнить</button>
             <button v-if="!show1" @click="show1 = true" class="app__btn">Показать график</button>
             <button v-if="show1" @click="show1 = false" class="app__btn">Скрыть график</button>
         </div>
 
 
-        <h3 class="app__label">График анализа временных характеристик</h3>
+        <h3 class="app__label">Анализ сортировок</h3>
+        <div class="app__form" style="justify-content: space-evenly; width: 100%">
+            <div style="width: 30%">
+                <label class="app__label" for="percent1">Задать процент упорядоченности</label>
+                <br>
+                <input class="app__percent" v-model="percent1" id="percent1"
+                       placeholder="Введите процент..."/>%
+            </div>
+            <div style="width: 20%">
+                <h4>Упорядоченность</h4>
+                <input type="checkbox" name="analise1" id="notSort"> Неупорядоченный <br>
+                <input type="checkbox" name="analise2" id="sort"> Упорядоченный<br>
+                <input type="checkbox" name="analise3" id="revertSort"> По убыванию<br>
+                <input type="checkbox" name="analise4" id="halfSort"> Частично<br>
+            </div>
+            <div style="width: 20%">
+                <h4>Сортировки</h4>
+                <input type="radio" name="analise" value="exchange"> Обмен <br>
+                <input type="radio" name="analise" value="choice"> Выбор<br>
+                <input type="radio" name="analise" value="insert"> Вставка<br>
+                <input type="radio" name="analise" value="shella"> Шелла<br>
+                <input type="radio" name="analise" value="linear"> Линейная<br>
+                <input type="radio" name="analise" value="onePhaseMerge"> Однофазная простым слиянием<br>
+                <input type="radio" name="analise" value="twoPhaseMerge"> Двухфазная простым слиянием<br>
+            </div>
+            <div style="width: 15%">
+                Размерность<input type="number" v-model="size2"><br>
+                Число шагов<input type="number" v-model="steps2">
+            </div>
+        </div>
         <div v-if="show2">Время, мс</div>
         <Graphics v-if="show2" :chartdata="chartData2" :options="chartOptions" class="app__graphics"></Graphics>
-        <div v-if="show2" class="app__text">Размерность СД</div>
+        <div v-if="show2" class="app__text">Шаги</div>
         <div class="app__form">
-            <button @click="sortedGraphic" class="app__btn">Сортировать</button>
+            <button @click="analiseCompare" class="app__btn">Сравнить</button>
             <button v-if="!show2" @click="show2 = true" class="app__btn">Показать график</button>
             <button v-if="show2" @click="show2 = false" class="app__btn">Скрыть график</button>
         </div>
-
-
-<!--        <div class="table">-->
-<!--            <h3 class="app__label">Таблица сравнения временных характеристик</h3>-->
-<!--            <TableItem-->
-<!--                class="table__row"-->
-<!--                algorithmName=""-->
-<!--                notSortedValue="Неупорядоченная последовательность"-->
-<!--                sortedValue="Упорядоченная последовательность"-->
-<!--                revertSortedValue="Упорядоченная в обратном порядке последовательность"-->
-<!--                halfSortedValue="Частично упорядоченная последовательность"-->
-<!--            >-->
-<!--            </TableItem>-->
-<!--            <TableItem v-for="(item, index) in tableInfo"-->
-<!--                       class="table__row"-->
-<!--                       :key="index"-->
-<!--                       :algorithmName="item.name"-->
-<!--                       :notSortedValue="item.notSortedValue"-->
-<!--                       :sortedValue="item.sortedValue"-->
-<!--                       :halfSortedValue="item.halfSortedValue"-->
-<!--                       :revertSortedValue="item.revertSortedValue"-->
-
-<!--            >-->
-<!--            </TableItem>-->
-<!--        </div>-->
-<!--        <div class="app__form">-->
-<!--            <button @click="setTableInfo" class="app__btn">Показать результаты</button>-->
-<!--        </div>-->
     </div>
 </template>
 
 <script>
 import Graphics from '../src/components/Graphics/index.vue';
-// import TableItem from '../src/components/TableItem/index.vue';
-import sortArray from '../src/algorithms/array.js';
-import sortHalfLinkedList from '../src/algorithms/halfLinkedList.js';
-import sortLinkedList from '../src/algorithms/linkedList.js';
-import {initHalfSortedList, initRevertSortedList, initSortedList} from '../src/algorithms/index.js';
+import insert from './algorithms/insert.js';
+import forwardChange from './algorithms/exchange.js'
+import {initHalfSortedList, initRevertSortedList, initSortedList} from './algorithms';
 import initNotSortedList from "../src/algorithms/index.js";
+import forwardChoice from "./algorithms/choice";
+import shellSort from "./algorithms/shella";
+import linearSort from "./algorithms/linear";
+import {SortOnePhase, SortTwoPhase} from "./algorithms/simpleMerge";
 
 export default {
     name: 'App',
 
     components: {
-        Graphics,
-        // TableItem
+        Graphics
     },
 
     data: function () {
         return {
+            twoPhaseSort: SortTwoPhase(initNotSortedList(15,90)),
+            onePhaseSort: SortOnePhase(initNotSortedList(15,90)),
+            sortTwoPhaseExample: {},
+            sortOnePhaseExample: {},
             percent: 0,
-            showPercent: false,
+            percent1: 0,
+
+            sizeExample: 0,
+            size1: 0,
+            size2:0,
+            steps1: 0,
+            steps2: 0,
+
             show1: false,
             show2: false,
-            show3: false,
-            show4: false,
 
-            tableInfo: {
-                array: {
-                    name: "Алгортм сортировки массива методом прямого включения",
-                    notSortedValue: 0,
-                    sortedValue: 0,
-                    halfSortedValue: 0,
-                    revertSortedValue: 0
-                },
-                halfLinkedList: {
-                    name: "Алгортм сортировки односвязного списка методом прямого включения",
-                    notSortedValue: 0,
-                    sortedValue: 0,
-                    halfSortedValue: 0,
-                    revertSortedValue: 0
-                },
-                linkedList: {
-                    name: "Алгортм сортировки двусвязного списка методом прямого включения",
-                    notSortedValue: 0,
-                    sortedValue: 0,
-                    halfSortedValue: 0,
-                    revertSortedValue: 0
-                }
-            },
-            graphicsInfo: {
-                notSorted: {
-                    array: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    },
-                    halfLinkedList: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    },
-                    linkedList: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    }
-                },
-                sorted: {
-                    array: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    },
-                    halfLinkedList: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    },
-                    linkedList: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    }
-                },
-                revertSorted: {
-                    array: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    },
-                    halfLinkedList: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    },
-                    linkedList: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    }
-                },
-                halfSorted: {
-                    array: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    },
-                    halfLinkedList: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    },
-                    linkedList: {
-                        first: 0,
-                        second: 0,
-                        third: 0
-                    }
-                }
-            },
+            sets1: [],
+            sets2: [],
+            graphicLabels1: [],
+            graphicLabels2: []
         }
     },
 
     methods: {
-        notSortedGraphic() {
-            let d = this.notSorted500.slice();
-            this.graphicsInfo.notSorted.array.third = performance.now();
-            sortArray(d);
-            this.graphicsInfo.notSorted.array.third = performance.now() - this.graphicsInfo.notSorted.array.third;
+        sortCompare() {
+            this.graphicLabels1 = [];
+            this.sets1 = [];
+            let choiceSet = [];
+            let exchangeSet = [];
+            let insertSet = [];
+            let linearSet = [];
+            let shellaSet = [];
+            let onePhaseMergeSet = [];
+            let twoPhaseMergeSet = [];
+            let list = [];
+            let len = 0;
+            for (let step = 1; step <= this.steps1; step++) {
+                this.graphicLabels1.push(step);
+                len = this.size1/this.steps1*(step);
+                list = this.listForSort(len);
 
-            let a1 = this.notSorted100.slice();
-            this.graphicsInfo.notSorted.array.first = performance.now();
-            sortArray(a1);
-            this.graphicsInfo.notSorted.array.first = performance.now() - this.graphicsInfo.notSorted.array.first;
+                if (document.getElementById('exchange').checked) {
+                    exchangeSet.push(forwardChange(list));
+                }
+                if (document.getElementById('choice').checked) {
+                    choiceSet.push(forwardChoice(list));
+                }
+                if (document.getElementById('insert').checked) {
+                    insertSet.push(insert(list));
+                }
+                if (document.getElementById('shella').checked) {
+                    shellaSet.push(shellSort(list));
+                }
+                if (document.getElementById('linear').checked) {
+                    linearSet.push(linearSort(list));
+                }
+                if (document.getElementById('onePhaseMerge').checked) {
+                    onePhaseMergeSet.push(SortOnePhase(list).time);
+                }
+                if (document.getElementById('twoPhaseMerge').checked) {
+                    twoPhaseMergeSet.push(SortTwoPhase(list).time);
+                }
+            }
 
-            let c = this.notSorted200.slice();
-            this.graphicsInfo.notSorted.array.second = performance.now();
-            sortArray(c);
-            this.graphicsInfo.notSorted.array.second = performance.now() - this.graphicsInfo.notSorted.array.second;
-
-            let b = this.notSorted100.slice();
-            this.graphicsInfo.notSorted.halfLinkedList.first = performance.now();
-            sortHalfLinkedList(b);
-            this.graphicsInfo.notSorted.halfLinkedList.first = performance.now() - this.graphicsInfo.notSorted.halfLinkedList.first;
-
-            let f = this.notSorted200.slice();
-            this.graphicsInfo.notSorted.halfLinkedList.second = performance.now();
-            sortHalfLinkedList(f);
-            this.graphicsInfo.notSorted.halfLinkedList.second = performance.now() - this.graphicsInfo.notSorted.halfLinkedList.second;
-
-            let x = this.notSorted500.slice();
-            this.graphicsInfo.notSorted.halfLinkedList.third = performance.now();
-            sortHalfLinkedList(x);
-            this.graphicsInfo.notSorted.halfLinkedList.third = performance.now() - this.graphicsInfo.notSorted.halfLinkedList.third;
-
-            let a = this.notSorted100.slice();
-            this.graphicsInfo.notSorted.linkedList.first = performance.now();
-            sortLinkedList(a);
-            this.graphicsInfo.notSorted.linkedList.first = performance.now() - this.graphicsInfo.notSorted.linkedList.first;
-
-            let aa = this.notSorted200.slice();
-            this.graphicsInfo.notSorted.linkedList.second = performance.now();
-            sortLinkedList(aa);
-            this.graphicsInfo.notSorted.linkedList.second = performance.now() - this.graphicsInfo.notSorted.linkedList.second;
-
-            let s = this.notSorted500.slice();
-            this.graphicsInfo.notSorted.linkedList.third = performance.now();
-            sortLinkedList(s);
-            this.graphicsInfo.notSorted.linkedList.third = performance.now() - this.graphicsInfo.notSorted.linkedList.third;
+            if (onePhaseMergeSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Однофазная простым слиянием',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#856cc7',
+                        fill: 'none',
+                        data: onePhaseMergeSet
+                    }
+                )
+            }
+            if (twoPhaseMergeSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Двухфазная простым слиянием',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#554e4e',
+                        fill: 'none',
+                        data: twoPhaseMergeSet
+                    }
+                )
+            }
+            if (exchangeSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Обмен',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#FF1703',
+                        fill: 'none',
+                        data: exchangeSet
+                    }
+                )
+            }
+            if (choiceSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Выбор',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#FF50A3',
+                        fill: 'none',
+                        data: choiceSet
+                    }
+                )
+            }
+            if (insertSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Вставка',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#006703',
+                        fill: 'none',
+                        data: insertSet
+                    }
+                )
+            }
+            if (shellaSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Шелла',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#0000A3',
+                        fill: 'none',
+                        data: shellaSet
+                    }
+                )
+            }
+            if (linearSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Линейная',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#c6d710',
+                        fill: 'none',
+                        data: linearSet
+                    }
+                )
+            }
         },
-        sortedGraphic() {
-            let c = this.sorted5000.slice();
-            this.graphicsInfo.sorted.array.third = performance.now();
-            sortArray(c);
-            this.graphicsInfo.sorted.array.third = performance.now() - this.graphicsInfo.sorted.array.third;
-
-            let a = this.sorted1000.slice();
-            this.graphicsInfo.sorted.array.first = performance.now();
-            sortArray(a);
-            this.graphicsInfo.sorted.array.first = performance.now() - this.graphicsInfo.sorted.array.first;
-
-            let b = this.sorted2000.slice();
-            this.graphicsInfo.sorted.array.second = performance.now();
-            sortArray(b);
-            this.graphicsInfo.sorted.array.second = performance.now() - this.graphicsInfo.sorted.array.second;
-
-            let a1 = this.sorted1000.slice();
-            this.graphicsInfo.sorted.halfLinkedList.first = performance.now();
-            sortHalfLinkedList(a1);
-            this.graphicsInfo.sorted.halfLinkedList.first = performance.now() - this.graphicsInfo.sorted.halfLinkedList.first;
-
-            let b1 = this.sorted2000.slice();
-            this.graphicsInfo.sorted.halfLinkedList.second = performance.now();
-            sortHalfLinkedList(b1);
-            this.graphicsInfo.sorted.halfLinkedList.second = performance.now() - this.graphicsInfo.sorted.halfLinkedList.second;
-
-            let c1 = this.sorted5000.slice();
-            this.graphicsInfo.sorted.halfLinkedList.third = performance.now();
-            sortHalfLinkedList(c1);
-            this.graphicsInfo.sorted.halfLinkedList.third = performance.now() - this.graphicsInfo.sorted.halfLinkedList.third;
-
-            let a2 = this.sorted1000.slice();
-            this.graphicsInfo.sorted.linkedList.first = performance.now();
-            sortLinkedList(a2);
-            this.graphicsInfo.sorted.linkedList.first = performance.now() - this.graphicsInfo.sorted.linkedList.first;
-
-            let c2 = this.sorted5000.slice();
-            this.graphicsInfo.sorted.linkedList.third = performance.now();
-            sortLinkedList(c2);
-            this.graphicsInfo.sorted.linkedList.third = performance.now() - this.graphicsInfo.sorted.linkedList.third;
-
-            let b2 = this.sorted2000.slice();
-            this.graphicsInfo.sorted.linkedList.second = performance.now();
-            sortLinkedList(b2);
-            this.graphicsInfo.sorted.linkedList.second = performance.now() - this.graphicsInfo.sorted.linkedList.second;
-
+        listForSort(length) {
+            let inp = document.getElementsByName('sort');
+            let massType = '';
+            for (let i = 0; i < inp.length; i++) {
+                if (inp[i].type === "radio" && inp[i].checked) {
+                    massType = inp[i].value;
+                }
+            }
+            switch (massType) {
+                case "notSort":
+                    return initNotSortedList(length, 100);
+                case "sort":
+                    return initSortedList(length, 100);
+                case "halfSort":
+                    return initHalfSortedList(length, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
+                case "revertSort":
+                    return initRevertSortedList(length, 100);
+                default:
+                    return [];
+            }
         },
-        revertSortedGraphic() {
-            let a = this.revertSorted200.slice();
-            this.graphicsInfo.revertSorted.array.first = performance.now();
-            sortArray(a);
-            this.graphicsInfo.revertSorted.array.first = performance.now() - this.graphicsInfo.revertSorted.array.first;
+        analiseCompare() {
+            this.graphicLabels2 = [];
+            this.sets2 = [];
+            let notSorted = [];
+            let sorted = [];
+            let halfSorted = [];
+            let revertSorted = [];
+            let list1 = [];
+            let list2 = [];
+            let list3 = [];
+            let list4 = [];
+            let len = 0;
 
-            let b = this.revertSorted400.slice();
-            this.graphicsInfo.revertSorted.array.second = performance.now();
-            sortArray(b);
-            this.graphicsInfo.revertSorted.array.second = performance.now() - this.graphicsInfo.revertSorted.array.second;
+            let inp = document.getElementsByName('analise');
+            let sortType = '';
+            for (let i = 0; i < inp.length; i++) {
+                if (inp[i].type === "radio" && inp[i].checked) {
+                    sortType = inp[i].value;
+                }
+            }
 
-            let c = this.revertSorted600.slice();
-            this.graphicsInfo.revertSorted.array.third = performance.now();
-            sortArray(c);
-            this.graphicsInfo.revertSorted.array.third = performance.now() - this.graphicsInfo.revertSorted.array.third;
+            for (let step = 1; step <= this.steps2; step++) {
+                this.graphicLabels2.push(step);
+                len = this.size2/this.steps2*(step);
 
-            let a1 = this.revertSorted200.slice();
-            this.graphicsInfo.revertSorted.halfLinkedList.first = performance.now();
-            sortHalfLinkedList(a1);
-            this.graphicsInfo.revertSorted.halfLinkedList.first = performance.now() - this.graphicsInfo.revertSorted.halfLinkedList.first;
+                if (document.getElementById('notSort').checked) {
+                    list1 = initNotSortedList(len, 100);
+                    switch (sortType) {
+                        case "exchange":
+                            notSorted.push(forwardChange(list1));
+                            break;
+                        case "choice":
+                            notSorted.push(forwardChoice(list1));
+                            break;
+                        case "insert":
+                            notSorted.push(insert(list1));
+                            break;
+                        case "shella":
+                            notSorted.push(shellSort(list1));
+                            break;
+                        case "linear":
+                            notSorted.push(linearSort(list1));
+                            break;
+                        case "onePhaseMerge":
+                            notSorted.push(SortOnePhase(list1).time);
+                            break;
+                        case "twoPhaseMerge":
+                            notSorted.push(SortTwoPhase(list1).time);
+                            break;
+                    }
+                }
+                if (document.getElementById('sort').checked) {
+                    list2 = initSortedList(len, 100);
+                    switch (sortType) {
+                        case "exchange":
+                            sorted.push(forwardChange(list2));
+                            break;
+                        case "choice":
+                            sorted.push(forwardChoice(list2));
+                            break;
+                        case "insert":
+                            sorted.push(insert(list2));
+                            break;
+                        case "shella":
+                            sorted.push(shellSort(list2));
+                            break;
+                        case "linear":
+                            sorted.push(linearSort(list2));
+                            break;
+                        case "onePhaseMerge":
+                            sorted.push(SortOnePhase(list2).time);
+                            break;
+                        case "twoPhaseMerge":
+                            sorted.push(SortTwoPhase(list2).time);
+                            break;
+                    }
+                }
+                if (document.getElementById('halfSort').checked) {
+                    list3 = initHalfSortedList(len, 100, !isNaN(this.percent1) ? this.percent1 / 100 : 0);
+                    switch (sortType) {
+                        case "exchange":
+                            halfSorted.push(forwardChange(list3));
+                            break;
+                        case "choice":
+                            halfSorted.push(forwardChoice(list3));
+                            break;
+                        case "insert":
+                            halfSorted.push(insert(list3));
+                            break;
+                        case "shella":
+                            halfSorted.push(shellSort(list3));
+                            break;
+                        case "linear":
+                            halfSorted.push(linearSort(list3));
+                            break;
+                        case "onePhaseMerge":
+                            halfSorted.push(SortOnePhase(list3).time);
+                            break;
+                        case "twoPhaseMerge":
+                            halfSorted.push(SortTwoPhase(list3).time);
+                            break;
+                    }
+                }
+                if (document.getElementById('revertSort').checked) {
+                    list4 = initRevertSortedList(len, 100);
+                    switch (sortType) {
+                        case "exchange":
+                            revertSorted.push(forwardChange(list4));
+                            break;
+                        case "choice":
+                            revertSorted.push(forwardChoice(list4));
+                            break;
+                        case "insert":
+                            revertSorted.push(insert(list4));
+                            break;
+                        case "shella":
+                            revertSorted.push(shellSort(list4));
+                            break;
+                        case "linear":
+                            revertSorted.push(linearSort(list4));
+                            break;
+                        case "onePhaseMerge":
+                            revertSorted.push(SortOnePhase(list4).time);
+                            break;
+                        case "twoPhaseMerge":
+                            revertSorted.push(SortTwoPhase(list4).time);
+                            break;
+                    }
+                }
+            }
 
-            let b1 = this.revertSorted400.slice();
-            this.graphicsInfo.revertSorted.halfLinkedList.second = performance.now();
-            sortHalfLinkedList(b1);
-            this.graphicsInfo.revertSorted.halfLinkedList.second = performance.now() - this.graphicsInfo.revertSorted.halfLinkedList.second;
-
-            let c1 = this.revertSorted600.slice();
-            this.graphicsInfo.revertSorted.halfLinkedList.third = performance.now();
-            sortHalfLinkedList(c1);
-            this.graphicsInfo.revertSorted.halfLinkedList.third = performance.now() - this.graphicsInfo.revertSorted.halfLinkedList.third;
-
-            let a2 = this.revertSorted200.slice();
-            this.graphicsInfo.revertSorted.linkedList.first = performance.now();
-            sortLinkedList(a2);
-            this.graphicsInfo.revertSorted.linkedList.first = performance.now() - this.graphicsInfo.revertSorted.linkedList.first;
-
-            let b2 = this.revertSorted400.slice();
-            this.graphicsInfo.revertSorted.linkedList.second = performance.now();
-            sortLinkedList(b2);
-            this.graphicsInfo.revertSorted.linkedList.second = performance.now() - this.graphicsInfo.revertSorted.linkedList.second;
-
-            let c2 = this.revertSorted600.slice();
-            this.graphicsInfo.revertSorted.linkedList.third = performance.now();
-            sortLinkedList(c2);
-            this.graphicsInfo.revertSorted.linkedList.third = performance.now() - this.graphicsInfo.revertSorted.linkedList.third;
+            if (notSorted.length) {
+                this.sets2.push(
+                    {
+                        label: 'Неупорядоченный',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#FF1703',
+                        fill: 'none',
+                        data: notSorted
+                    }
+                )
+            }
+            if (sorted.length) {
+                this.sets2.push(
+                    {
+                        label: 'Упорядоченный',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#efab09',
+                        fill: 'none',
+                        data: sorted
+                    }
+                )
+            }
+            if (halfSorted.length) {
+                this.sets2.push(
+                    {
+                        label: 'Частично',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#006703',
+                        fill: 'none',
+                        data: halfSorted
+                    }
+                )
+            }
+            if (revertSorted.length) {
+                this.sets2.push(
+                    {
+                        label: 'По убыванию',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#0000A3',
+                        fill: 'none',
+                        data: revertSorted
+                    }
+                )
+            }
         },
-        halfSortedGraphic() {
-            let c = this.halfSorted600.slice();
-            this.graphicsInfo.halfSorted.array.third = performance.now();
-            sortArray(c);
-            this.graphicsInfo.halfSorted.array.third = performance.now() - this.graphicsInfo.halfSorted.array.third;
+        sortExample() {
+            this.sortOnePhaseExample = SortOnePhase(initNotSortedList(this.sizeExample, 100));
+            this.sortTwoPhaseExample = SortTwoPhase(initNotSortedList(this.sizeExample, 100));
+            // console.log(this.sortOnePhaseExample);
 
-            let b = this.halfSorted400.slice();
-            this.graphicsInfo.halfSorted.array.second = performance.now();
-            sortArray(b);
-            this.graphicsInfo.halfSorted.array.second = performance.now() - this.graphicsInfo.halfSorted.array.second;
-
-            let a = this.halfSorted200.slice();
-            this.graphicsInfo.halfSorted.array.first = performance.now();
-            sortArray(a);
-            this.graphicsInfo.halfSorted.array.first = performance.now() - this.graphicsInfo.halfSorted.array.first;
-
-            let a1 = this.halfSorted200.slice();
-            this.graphicsInfo.halfSorted.halfLinkedList.first = performance.now();
-            sortHalfLinkedList(a1);
-            this.graphicsInfo.halfSorted.halfLinkedList.first = performance.now() - this.graphicsInfo.halfSorted.halfLinkedList.first;
-
-            let b1 = this.halfSorted400.slice();
-            this.graphicsInfo.halfSorted.halfLinkedList.second = performance.now();
-            sortHalfLinkedList(b1);
-            this.graphicsInfo.halfSorted.halfLinkedList.second = performance.now() - this.graphicsInfo.halfSorted.halfLinkedList.second;
-
-            let c1 = this.halfSorted600.slice();
-            this.graphicsInfo.halfSorted.halfLinkedList.third = performance.now();
-            sortHalfLinkedList(c1);
-            this.graphicsInfo.halfSorted.halfLinkedList.third = performance.now() - this.graphicsInfo.halfSorted.halfLinkedList.third;
-
-            let c2 = this.halfSorted600.slice();
-            this.graphicsInfo.halfSorted.linkedList.third = performance.now();
-            sortLinkedList(c2);
-            this.graphicsInfo.halfSorted.linkedList.third = performance.now() - this.graphicsInfo.halfSorted.linkedList.third;
-
-            let b2 = this.halfSorted400.slice();
-            this.graphicsInfo.halfSorted.linkedList.second = performance.now();
-            sortLinkedList(b2);
-            this.graphicsInfo.halfSorted.linkedList.second = performance.now() - this.graphicsInfo.halfSorted.linkedList.second;
-
-            let a2 = this.halfSorted200.slice();
-            this.graphicsInfo.halfSorted.linkedList.first = performance.now();
-            sortLinkedList(a2);
-            this.graphicsInfo.halfSorted.linkedList.first = performance.now() - this.graphicsInfo.halfSorted.linkedList.first;
-        },
-        // setTableInfo() {
-        //     let a = initNotSortedList(1100, 100);
-        //     let b = initSortedList(1100, 100);
-        //     let c = initHalfSortedList(1100, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
-        //     let d = initRevertSortedList(1100, 100);
-        //
-        //     this.tableInfo.array.notSortedValue = performance.now();
-        //     sortArray(a.slice());
-        //     this.tableInfo.array.notSortedValue = performance.now() - this.tableInfo.array.notSortedValue;
-        //
-        //     this.tableInfo.array.sortedValue = performance.now();
-        //     sortArray(b.slice());
-        //     this.tableInfo.array.sortedValue = performance.now() - this.tableInfo.array.sortedValue;
-        //
-        //     this.tableInfo.array.halfSortedValue = performance.now();
-        //     sortArray(c.slice());
-        //     this.tableInfo.array.halfSortedValue = performance.now() - this.tableInfo.array.halfSortedValue;
-        //
-        //     this.tableInfo.array.revertSortedValue = performance.now();
-        //     sortArray(d.slice());
-        //     this.tableInfo.array.revertSortedValue = performance.now() - this.tableInfo.array.revertSortedValue;
-        //
-        //     this.tableInfo.halfLinkedList.notSortedValue = performance.now();
-        //     sortHalfLinkedList(a.slice());
-        //     this.tableInfo.halfLinkedList.notSortedValue = performance.now() - this.tableInfo.halfLinkedList.notSortedValue;
-        //
-        //     this.tableInfo.halfLinkedList.sortedValue = performance.now();
-        //     sortHalfLinkedList(b.slice());
-        //     this.tableInfo.halfLinkedList.sortedValue = performance.now() - this.tableInfo.halfLinkedList.sortedValue;
-        //
-        //     this.tableInfo.halfLinkedList.halfSortedValue = performance.now();
-        //     sortHalfLinkedList(c.slice());
-        //     this.tableInfo.halfLinkedList.halfSortedValue = performance.now() - this.tableInfo.halfLinkedList.halfSortedValue;
-        //
-        //     this.tableInfo.halfLinkedList.revertSortedValue = performance.now();
-        //     sortHalfLinkedList(d.slice());
-        //     this.tableInfo.halfLinkedList.revertSortedValue = performance.now() - this.tableInfo.halfLinkedList.revertSortedValue;
-        //
-        //
-        //     this.tableInfo.linkedList.notSortedValue = performance.now();
-        //     sortLinkedList(a.slice());
-        //     this.tableInfo.linkedList.notSortedValue = performance.now() - this.tableInfo.linkedList.notSortedValue;
-        //
-        //     this.tableInfo.linkedList.sortedValue = performance.now();
-        //     sortLinkedList(b.slice());
-        //     this.tableInfo.linkedList.sortedValue = performance.now() - this.tableInfo.linkedList.sortedValue;
-        //
-        //     this.tableInfo.linkedList.halfSortedValue = performance.now();
-        //     sortLinkedList(c.slice());
-        //     this.tableInfo.linkedList.halfSortedValue = performance.now() - this.tableInfo.linkedList.halfSortedValue;
-        //
-        //     this.tableInfo.linkedList.revertSortedValue = performance.now();
-        //     sortLinkedList(d.slice());
-        //     this.tableInfo.linkedList.revertSortedValue = performance.now() - this.tableInfo.linkedList.revertSortedValue;
-        // }
+        }
     },
 
     computed: {
-        notSorted100() {
-            return initNotSortedList(200, 100);
-        },
-        notSorted200() {
-            return initNotSortedList(1000, 100);
-        },
-        notSorted500() {
-            return initNotSortedList(2000, 100);
-        },
-        sorted1000() {
-            return initSortedList(200, 100);
-        },
-        sorted2000() {
-            return initSortedList(1000, 100);
-        },
-        sorted5000() {
-            return initSortedList(1500, 100);
-        },
-        halfSorted200() {
-            return initHalfSortedList(200, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
-        },
-        halfSorted400() {
-            return initHalfSortedList(1000, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
-        },
-        halfSorted600() {
-            return initHalfSortedList(1500, 100, !isNaN(this.percent) ? this.percent / 100 : 0);
-        },
-        revertSorted200() {
-            return initRevertSortedList(300, 100);
-        },
-        revertSorted400() {
-            return initRevertSortedList(1000, 100);
-        },
-        revertSorted600() {
-            return initRevertSortedList(2000, 100);
-        },
         chartOptions() {
             return {
                 responsive: true,
@@ -474,128 +508,15 @@ export default {
             }
         },
         chartData1() {
-            let sets = [
-                {
-                    label: 'Сортировка массива методом прямого включения',
-                    pointBackgroundColor: 'white',
-                    borderColor: '#006703',
-                    fill: 'none',
-                    data: [0, this.graphicsInfo.notSorted.array.first, this.graphicsInfo.notSorted.array.second, this.graphicsInfo.notSorted.array.third]
-                },
-                {
-                    label: 'Сортировка односвязного списка методом прямого включения',
-                    pointBackgroundColor: 'white',
-                    borderColor: 'yellow',
-                    fill: 'none',
-                    data: [0, this.graphicsInfo.notSorted.halfLinkedList.first, this.graphicsInfo.notSorted.halfLinkedList.second, this.graphicsInfo.notSorted.halfLinkedList.third]
-                },
-                {
-                    label: 'Сортировка двусвязного списка методом прямого включения',
-                    pointBackgroundColor: 'white',
-                    borderColor: '#CE6796',
-                    fill: 'none',
-                    data: [0, this.graphicsInfo.notSorted.linkedList.first, this.graphicsInfo.notSorted.linkedList.second, this.graphicsInfo.notSorted.linkedList.third]
-                }
-            ];
-            let testItem = {
-                label: 'Тест',
-                pointBackgroundColor: 'white',
-                borderColor: '#AA2703',
-                fill: 'none',
-                data: [0, 1, 2, 3]
-            }
-            if (!this.show4) {
-                sets.push(testItem);
-            }
             return {
-                labels: ['0', '200', '1000', '1500'],
-                datasets: sets
+                labels: this.graphicLabels1,
+                datasets: this.sets1
             }
         },
         chartData2() {
             return {
-                labels: ['0', '200', '1000', '1500'],
-                datasets: [
-                    {
-                        label: 'Сортировка массива методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: '#006703',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.sorted.array.first, this.graphicsInfo.sorted.array.second, this.graphicsInfo.sorted.array.third]
-                    },
-                    {
-                        label: 'Сортировка односвязного списка методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: 'yellow',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.sorted.halfLinkedList.first, this.graphicsInfo.sorted.halfLinkedList.second, this.graphicsInfo.sorted.halfLinkedList.third]
-                    },
-                    {
-                        label: 'Сортировка двусвязного списка методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: '#CE6796',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.sorted.linkedList.first, this.graphicsInfo.sorted.linkedList.second, this.graphicsInfo.sorted.linkedList.third]
-                    }
-                ]
-            }
-        },
-        chartData3() {
-            return {
-                labels: ['0', '200', '1000', '1500'],
-                datasets: [
-                    {
-                        label: 'Сортировка массива методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: '#006703',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.revertSorted.array.first, this.graphicsInfo.revertSorted.array.second, this.graphicsInfo.revertSorted.array.third]
-                    },
-                    {
-                        label: 'Сортировка односвязного списка методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: 'yellow',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.revertSorted.halfLinkedList.first, this.graphicsInfo.revertSorted.halfLinkedList.second, this.graphicsInfo.revertSorted.halfLinkedList.third]
-
-                    },
-                    {
-                        label: 'Сортировка двусвязного списка методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: '#CE6796',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.revertSorted.linkedList.first, this.graphicsInfo.revertSorted.linkedList.second, this.graphicsInfo.revertSorted.linkedList.third]
-                    }
-                ]
-            }
-        },
-        chartData4() {
-            return {
-                labels: ['0', '200', '1000', '1500'],
-                datasets: [
-                    {
-                        label: 'Сортировка массива методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: '#006703',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.halfSorted.array.first, this.graphicsInfo.halfSorted.array.second, this.graphicsInfo.halfSorted.array.third]
-                    },
-                    {
-                        label: 'Сортировка односвязного списка методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: 'yellow',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.halfSorted.halfLinkedList.first, this.graphicsInfo.halfSorted.halfLinkedList.second, this.graphicsInfo.halfSorted.halfLinkedList.third]
-
-                    },
-                    {
-                        label: 'Сортировка двусвязного списка методом прямого включения',
-                        pointBackgroundColor: 'white',
-                        borderColor: '#CE6796',
-                        fill: 'none',
-                        data: [0, this.graphicsInfo.halfSorted.linkedList.first, this.graphicsInfo.halfSorted.linkedList.second, this.graphicsInfo.halfSorted.linkedList.third]
-                    }
-                ]
+                labels: this.graphicLabels2,
+                datasets: this.sets2
             }
         }
     }
@@ -688,6 +609,21 @@ a:hover {
 body {
     margin: 0;
     background: #FFFFFF;
+}
+
+.tableItem {
+    display: flex;
+    justify-content: center;
+}
+
+.tableItem__value {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 20%;
+    min-height: 60px;
+    border: 1px solid #2c3e50;
 }
 
 /* fonts */
