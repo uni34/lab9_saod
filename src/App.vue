@@ -3,44 +3,47 @@
         <h3 class="app__label">Характеристики сортировок</h3>
         <div class="app__form" style="justify-content: space-evenly; width: 100%">
             <h4>
-                {{twoPhaseSort.methodName}} <br>
+                Быстрая сортировка слева <br>
             </h4>
-            <div v-for="(item, i) in twoPhaseSort.allSwaps" :key="i" style="width: 100%; margin: 2px 30px">
-                {{item.toString()}}
+            <div v-for="(item, i) in quickLeftExample[3]" :key="i" style="width: 100%; margin: 2px 30px">
+                {{item}}
             </div>
         </div>
 
         <div class="app__form" style="justify-content: space-evenly; width: 100%">
             <h4>
-                {{onePhaseSort.methodName}} <br>
+                Быстрая сортиировка справа <br>
             </h4>
-            <div v-for="(item, i) in onePhaseSort.allSwaps" :key="i" style="width: 100%; margin: 2px 30px">
-                {{item.toString()}}
+            <div v-for="(item, i) in quickRightExample[3]" :key="i" style="width: 100%; margin: 2px 30px">
+                {{item}}
             </div>
         </div>
 
+        <button @click="sortExample1" class="app__btn">Сравнить</button>
 
-        <h3 class="app__label">Сравнение алгоритмов сортировки простым слиянием</h3>
+
+
+        <h3 class="app__label">Сравнение алгоритмов быстрой сортировки</h3>
         <div style="display: flex; justify-content: center">
             Размерность<br><input type="number" v-model="sizeExample">
         </div>
 
         <div class="tableItem">
             <div class="tableItem__value"></div>
-            <div class="tableItem__value">Однофазная</div>
-            <div class="tableItem__value">Двухфазная</div>
+            <div class="tableItem__value">Быстрая слева</div>
+            <div class="tableItem__value">Быстрая справа</div>
         </div>
         <div class="tableItem">
             <div class="tableItem__value">Время</div>
-            <div class="tableItem__value">{{sortOnePhaseExample.time}}</div>
-            <div class="tableItem__value">{{sortTwoPhaseExample.time}}</div>
+            <div class="tableItem__value">{{time}}</div>
+            <div class="tableItem__value">{{time1}}</div>
         </div>
         <div class="tableItem">
             <div class="tableItem__value">
                 Число чтений
             </div>
-            <div class="tableItem__value">{{sortOnePhaseExample.count}}</div>
-            <div class="tableItem__value">{{sortTwoPhaseExample.count}}</div>
+            <div class="tableItem__value">{{charLeft[1]}}</div>
+            <div class="tableItem__value">{{charRight[1]}}</div>
         </div>
         <div class="tableItem">
             <div class="tableItem__value">
@@ -48,6 +51,13 @@
             </div>
             <div class="tableItem__value">{{sortOnePhaseExample.count}}</div>
             <div class="tableItem__value">{{sortTwoPhaseExample.count}}</div>
+        </div>
+        <div class="tableItem">
+            <div class="tableItem__value">
+                Число записей
+            </div>
+            <div class="tableItem__value">{{ charLeft[2] }}</div>
+            <div class="tableItem__value">{{ charRight[2] }}</div>
         </div>
         <button @click="sortExample" class="app__btn">Сравнить</button>
 
@@ -153,12 +163,14 @@ export default {
 
     data: function () {
         return {
-            twoPhaseSort: SortTwoPhase(initNotSortedList(15,90)),
-            onePhaseSort: SortOnePhase(initNotSortedList(15,90)),
-            sortTwoPhaseExample: {},
-            sortOnePhaseExample: {},
+            time: 0,
+            time1: 0,
             percent: 0,
             percent1: 0,
+            charLeft: [0,0,0,[]],
+            charRight: [0,0,0,[]],
+            quickLeftExample: [0,0,0,[]],
+            quickRightExample: [0,0,0,[]],
 
             sizeExample: 0,
             size1: 0,
@@ -177,6 +189,20 @@ export default {
     },
 
     methods: {
+        sortExample1() {
+            let a = initNotSortedList(7,100);
+            let b = initNotSortedList(15,100);
+            let result = '';
+            for (let i of a) {
+                result += i;
+                result += ' ';
+            }
+            this.quickLeftExample[3].push(result + '\n');
+            quickSortLeft(a, 0, a.length-1, this.quickLeftExample, true);
+            quickSortRight(b, 0, b.length-1, this.quickRightExample, true);
+console.log(this.quickLeftExample);
+
+        },
         sortCompare() {
             this.graphicLabels1 = [];
             this.sets1 = [];
@@ -214,6 +240,18 @@ export default {
                 }
                 if (document.getElementById('twoPhaseMerge').checked) {
                     twoPhaseMergeSet.push(SortTwoPhase(list).time);
+                }
+                if (document.getElementById('quickLeft').checked) {
+                    let time = performance.now();
+                    quickSortLeft(list.slice(), 0, list.length-1, [0,0,0,[]], false);
+                    time = performance.now() - time;
+                    quickLeftSet.push(time);
+                }
+                if (document.getElementById('quickRight').checked) {
+                    let time1 = performance.now();
+                    quickSortRight(list.slice(), 0, list.length-1, [0,0,0,[]], false);
+                    time1 = performance.now() - time1;
+                    quickRightSet.push(time1);
                 }
             }
 
@@ -294,6 +332,28 @@ export default {
                     }
                 )
             }
+            if (quickLeftSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Быстрая слева',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#080900',
+                        fill: 'none',
+                        data: quickLeftSet
+                    }
+                )
+            }
+            if (quickRightSet.length) {
+                this.sets1.push(
+                    {
+                        label: 'Быстрая справа',
+                        pointBackgroundColor: 'white',
+                        borderColor: '#7fd46d',
+                        fill: 'none',
+                        data: quickRightSet
+                    }
+                )
+            }
         },
         listForSort(length) {
             let inp = document.getElementsByName('sort');
@@ -328,6 +388,7 @@ export default {
             let list3 = [];
             let list4 = [];
             let len = 0;
+            let time = 0;
 
             let inp = document.getElementsByName('analise');
             let sortType = '';
@@ -365,6 +426,16 @@ export default {
                         case "twoPhaseMerge":
                             notSorted.push(SortTwoPhase(list1).time);
                             break;
+                        case "quickLeft":
+                            time = performance.now();
+                            quickSortLeft(list1.slice(), 0, list1.length-1, [0,0,0,[]], false);
+                            notSorted.push(performance.now() - time);
+                            break;
+                        case "quickRight":
+                            time = performance.now();
+                            quickSortRight(list1.slice(), 0, list1.length-1, [0,0,0,[]], false);
+                            notSorted.push(performance.now() - time);
+                            break;
                     }
                 }
                 if (document.getElementById('sort').checked) {
@@ -390,6 +461,16 @@ export default {
                             break;
                         case "twoPhaseMerge":
                             sorted.push(SortTwoPhase(list2).time);
+                            break;
+                        case "quickLeft":
+                            time = performance.now();
+                            quickSortLeft(list2.slice(), 0, list2.length-1, [0,0,0,[]], false);
+                            sorted.push(performance.now() - time);
+                            break;
+                        case "quickRight":
+                            time = performance.now();
+                            quickSortRight(list2.slice(), 0, list2.length-1, [0,0,0,[]], false);
+                            sorted.push(performance.now() - time);
                             break;
                     }
                 }
@@ -417,6 +498,16 @@ export default {
                         case "twoPhaseMerge":
                             halfSorted.push(SortTwoPhase(list3).time);
                             break;
+                        case "quickLeft":
+                            time = performance.now();
+                            quickSortLeft(list3.slice(), 0, list3.length-1, [0,0,0,[]], false);
+                            halfSorted.push(performance.now() - time);
+                            break;
+                        case "quickRight":
+                            time = performance.now();
+                            quickSortRight(list3.slice(), 0, list3.length-1, [0,0,0,[]], false);
+                            halfSorted.push(performance.now() - time);
+                            break;
                     }
                 }
                 if (document.getElementById('revertSort').checked) {
@@ -442,6 +533,16 @@ export default {
                             break;
                         case "twoPhaseMerge":
                             revertSorted.push(SortTwoPhase(list4).time);
+                            break;
+                        case "quickLeft":
+                            time = performance.now();
+                            quickSortLeft(list4.slice(), 0, list4.length-1, [0,0,0,[]], false);
+                            revertSorted.push(performance.now() - time);
+                            break;
+                        case "quickRight":
+                            time = performance.now();
+                            quickSortRight(list4.slice(), 0, list4.length-1, [0,0,0,[]], false);
+                            revertSorted.push(performance.now() - time);
                             break;
                     }
                 }
@@ -493,10 +594,17 @@ export default {
             }
         },
         sortExample() {
-            this.sortOnePhaseExample = SortOnePhase(initNotSortedList(this.sizeExample, 100));
-            this.sortTwoPhaseExample = SortTwoPhase(initNotSortedList(this.sizeExample, 100));
-            // console.log(this.sortOnePhaseExample);
+            let example1 = initNotSortedList(this.sizeExample, 100);
+            let example2 = example1.slice();
 
+            this.time = performance.now();
+            quickSortLeft(example1, 0, example1.length-1, this.charLeft, false);
+            this.time = performance.now() - this.time;
+
+            this.time1 = performance.now();
+            quickSortRight(example2, 0, example2.length-1, this.charRight, false);
+            this.time1 = performance.now() - this.time1;
+            console.log(this.charRight);
         }
     },
 
